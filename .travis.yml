@@ -1,0 +1,15 @@
+language: java
+jdk:
+  - openjdk16
+
+env:
+  global:
+    - CODECOV_TOKEN="171775a9-752a-411b-9a01-b5465dbe5cba"
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
