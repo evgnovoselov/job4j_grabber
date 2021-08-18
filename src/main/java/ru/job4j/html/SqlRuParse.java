@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.job4j.grabber.utils.SqlRuDateTimeParser;
 
 import java.io.IOException;
 
@@ -17,7 +18,9 @@ public class SqlRuParse {
             System.out.println(href.text());
             Element parent = td.parent();
             if (parent != null) {
-                System.out.println(parent.child(5).text());
+                String date = parent.child(5).text();
+                System.out.println(date);
+                System.out.printf("LocalDateTime: %s%n", new SqlRuDateTimeParser().parse(date));
             }
             System.out.println("=======");
         }
