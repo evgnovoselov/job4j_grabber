@@ -52,7 +52,7 @@ public class AlertRabbit {
             scheduler.scheduleJob(job, trigger);
             Thread.sleep(10000);
             scheduler.shutdown();
-            Thread.sleep(1000);
+            Thread.sleep(1000); // Без задержки, закрывается коннект быстрее чем Job заканчивает отправку в бд, если sleep = n * interval, перед scheduler.shutdown
             System.out.println(store);
         } catch (Exception e) {
             e.printStackTrace();
