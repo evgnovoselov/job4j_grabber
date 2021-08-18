@@ -22,9 +22,25 @@ public class SqlRuDateTimeParser implements DateTimeParser {
 
     @Override
     public LocalDateTime parse(String parse) {
-        String str = "30 07 21, 10:35";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yy, HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
-        return dateTime;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MM yy, HH:mm");
+        String date = "";
+        if (!parse.startsWith("сег") && !parse.startsWith("вч")) {
+            String[] split = parse.split(" ");
+            split[1] = MONTHS.get(split[1]);
+            date = String.join(" ", split);
+        }
+        if (parse.startsWith("сег")) {
+            String time = parse.split(" ")[1];
+            String[] split = LocalDateTime.now().format(formatter).split(" ");
+            split[3] = time;
+            date = String.join(" ", split);
+        }
+        if (parse.startsWith("вч")) {
+            String time = parse.split(" ")[1];
+            String[] split = LocalDateTime.now().minusDays(1).format(formatter).split(" ");
+            split[3] = time;
+            date = String.join(" ", split);
+        }
+        return LocalDateTime.parse(date, formatter);
     }
 }
