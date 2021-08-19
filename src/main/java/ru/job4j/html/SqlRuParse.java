@@ -8,6 +8,8 @@ import ru.job4j.grabber.utils.SqlRuDateTimeParser;
 import ru.job4j.model.Post;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SqlRuParse {
 
@@ -32,7 +34,13 @@ public class SqlRuParse {
                     System.out.println(date);
                     System.out.printf("LocalDateTime: %s%n", new SqlRuDateTimeParser().parse(date));
                 }
-                Post post = getPostFromUrl(href.attr("href"));
+                Map<String, String> detail = getDetailPostData(href.attr("href"));
+                Post post = new Post(
+                        href.text(),
+                        href.attr("href"),
+                        detail.get("description"),
+                        new SqlRuDateTimeParser().parse(detail.get("created"))
+                );
                 post.setId(++postCounter);
                 System.out.println(post);
                 System.out.println("=======");
@@ -40,16 +48,13 @@ public class SqlRuParse {
         }
     }
 
-    public static Post getPostFromUrl(String href) throws IOException {
-        Document document = Jsoup.connect(href).get();
-        String title = document.title().substring(0, document.title().indexOf(" / Вакансии"));
-        Element description = document.select(".msgBody").get(1);
-        Element created = document.select(".msgFooter").get(0);
-        return new Post(
-                title,
-                href,
-                description.text(),
-                new SqlRuDateTimeParser().parse(created.text().substring(0, created.text().indexOf(" [")))
-        );
+    public static Map<String, String> getDetailPostData(String url) throws IOException {
+        Document document = Jsoup.connect(url).get();
+        Map<String, String> detail = new HashMap<>();
+        detail.put("description", document.select(".msgBody").get(1).text());
+        String time = document.select(".msgFooter").get(0).text();
+        time = time.substring(0, time.indexOf(" ["));
+        detail.put("created", time);
+        return detail;
     }
 }
