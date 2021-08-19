@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import ru.job4j.grabber.utils.SqlRuDateTimeParser;
+import ru.job4j.model.Post;
 
 import java.io.IOException;
 
@@ -23,8 +24,13 @@ public class SqlRuParse {
                     System.out.println(date);
                     System.out.printf("LocalDateTime: %s%n", new SqlRuDateTimeParser().parse(date));
                 }
+                Post post = getPostFromUrl(href.attr("href"));
                 System.out.println("=======");
             }
         }
+    }
+
+    private static Post getPostFromUrl(String href) {
+        return null;
     }
 }
