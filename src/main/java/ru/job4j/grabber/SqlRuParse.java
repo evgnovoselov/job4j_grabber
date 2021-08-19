@@ -14,6 +14,8 @@ import java.util.List;
 public class SqlRuParse implements Parse {
     private final DateTimeParser dateTimeParser;
 
+    private static int postCounterId;
+
     public SqlRuParse(DateTimeParser dateTimeParser) {
         this.dateTimeParser = dateTimeParser;
     }
@@ -42,6 +44,23 @@ public class SqlRuParse implements Parse {
 
     @Override
     public Post detail(String link) {
-        return null;
+        Document document;
+        Post post = null;
+        try {
+            document = Jsoup.connect(link).get();
+            String title = document.title().substring(0, document.title().indexOf(" / Вакансии"));
+            String time = document.select(".msgFooter").get(0).text();
+            time = time.substring(0, time.indexOf(" ["));
+            post = new Post(
+                    title,
+                    link,
+                    document.select(".msgBody").get(1).text(),
+                    dateTimeParser.parse(time)
+            );
+            post.setId(++postCounterId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return post;
     }
 }
