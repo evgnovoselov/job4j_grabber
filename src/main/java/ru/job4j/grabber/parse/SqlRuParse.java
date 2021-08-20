@@ -23,9 +23,8 @@ public class SqlRuParse implements Parse {
     @Override
     public List<Post> list(String link) {
         List<Post> posts = new ArrayList<>();
-        Document document;
         try {
-            document = Jsoup.connect(link).get();
+            Document document = Jsoup.connect(link).get();
             Elements row = document.select(".postslisttopic");
             int skip = 3;
             for (Element element : row) {
@@ -44,10 +43,9 @@ public class SqlRuParse implements Parse {
 
     @Override
     public Post detail(String link) {
-        Document document;
         Post post = null;
         try {
-            document = Jsoup.connect(link).get();
+            Document document = Jsoup.connect(link).get();
             String title = document.title().substring(0, document.title().indexOf(" / Вакансии"));
             String time = document.select(".msgFooter").get(0).text();
             time = time.substring(0, time.indexOf(" ["));
