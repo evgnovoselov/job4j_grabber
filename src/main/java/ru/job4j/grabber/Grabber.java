@@ -2,20 +2,23 @@ package ru.job4j.grabber;
 
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import ru.job4j.grabber.model.Post;
 import ru.job4j.grabber.parse.Parse;
 import ru.job4j.grabber.parse.SqlRuParse;
+import ru.job4j.grabber.store.PsqlStore;
 import ru.job4j.grabber.store.Store;
 import ru.job4j.grabber.utils.SqlRuDateTimeParser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
 public class Grabber implements Grab {
     private final Properties cfg = new Properties();
 
     public Store store() {
-        return null;
+        return new PsqlStore(cfg);
     }
 
     public Scheduler scheduler() throws SchedulerException {
@@ -54,7 +57,8 @@ public class Grabber implements Grab {
             JobDataMap map = context.getJobDetail().getJobDataMap();
             Store store = (Store) map.get("store");
             Parse parse = (Parse) map.get("parse");
-            // TODO logic
+            List<Post> posts = parse.list("https://www.sql.ru/forum/job-offers/1");
+            posts.forEach(store::save);
         }
     }
 
