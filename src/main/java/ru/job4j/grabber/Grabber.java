@@ -58,7 +58,7 @@ public class Grabber implements Grab {
             Store store = (Store) map.get("store");
             Parse parse = (Parse) map.get("parse");
             List<Post> posts = parse.list("https://www.sql.ru/forum/job-offers/1");
-            posts.forEach(store::save);
+            posts.stream().filter(post -> post.getTitle().toLowerCase().contains("java")).forEach(store::save);
         }
     }
 
